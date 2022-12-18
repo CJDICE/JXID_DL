@@ -15,7 +15,7 @@ def downloadImg(dirName, imgList):
 	if not os.path.exists(downloadDirectory):
 		os.mkdir(downloadDirectory)
 
-	headers = getHeaders()
+	headers = composeHeaders()
 
 	i = 1
 	for img in imgList:
@@ -31,7 +31,7 @@ def downloadImg(dirName, imgList):
 
 
 
-def getHeaders():
+def composeHeaders():
 	headers = {
 		'User-Agent':'',
 		'Cookie':''
@@ -47,10 +47,10 @@ def getHeaders():
 
 
 def getHtml(url):
-	headers = getHeaders()
+	headers = composeHeaders()
 	page1 = urllib.request.Request(url, headers=headers)
 	page = urlopen(page1)
-	html = str(page.read(), 'utf-8');
+	html = str(page.read(), 'utf-8')
 	return html
 
 
@@ -61,7 +61,7 @@ def getLink(pageURL):
 		return
 
 	try:
-		print('Get URL:', pageURL);
+		print('Get URL:', pageURL)
 		html = getHtml(pageURL)
 
 		#print(html)
@@ -70,8 +70,12 @@ def getLink(pageURL):
 		imgTagList = bs.find_all('a', {'rel':'show_group'})
 
 		TagAuthorName = bs.find('a', {'class', 'authorNameImg'})
-		AuthorName = TagAuthorName.attrs['href'][1:]
+		AuthorName = TagAuthorName.attrs['href'][1:].strip()
 		AuthorName = '[' + AuthorName + ']'
+
+		TagModelName = bs.find('a', {'class', 'modelNameImg'})
+		ModelName = TagModelName.attrs['href'][1:].strip()
+		print(ModelName)
 
 		TagTitle = bs.find('h3')
 
@@ -84,7 +88,7 @@ def getLink(pageURL):
 		for a in imgTagList:
 			i = i+1
 			try:
-				#print(a.attrs['href'])
+				print(a.attrs['href'])
 				highResolution = a.attrs['href'].replace('/1600/', '/2560/')
 				imgList.append(highResolution)
 			except Exception as e:
@@ -92,23 +96,28 @@ def getLink(pageURL):
 
 		print('total:' + str(i))
 
-		downloadImg(dirName, imgList)
+		#downloadImg(dirName, imgList)
 
 	except HTTPError as e:
-		print(e);
+		print(e)
 	except URLError as e:
 		print('The server could not be found!')
 	#except Exception as e:
 	#	print('Other:',e);
 	else:
-		print('It Works');
+		print('It Works')
 
 
 
-###Main process
+### Main process ###
+if 'VIRTUAL_ENV' in os.environ:
+    print('Running in virtual environment:', os.environ['VIRTUAL_ENV'])
+else:
+    print('Not running in a virtual environment')
+
 if len(sys.argv) < 2:
 	print('Usage: python3 JXID_DL.py [URL]')
 	exit()
+
 strMainPage = sys.argv[1]
 getLink(strMainPage)
-

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.45/vue.cjs.min.js" integrity="sha512-6B3X7ZmeLyv4mv37HvNQX+/iVFlAMj2h4/Cqp/Rs05gO0vQ8GGxbh3voL3oJNSqaB5Z7zOBZgDHy2wLyw8TCBA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+    <form action="{% url 'submit' %}" method="post">
+        {% csrf_token %}
+        <label for="inputField">Input:</label><br>
+        <input type="text" id="inputField" name="inputField"><br>
+        <label for="cookie">Cookie:</label><br>
+        <input type="text" id="cookie" name="cookie"><br>
+        <label for="agent">User-Agent:</label><br>
+        <input type="text" id="agent" name="agent"><br>
+        <input type="submit" value="Submit">
+    </form>
+    <div>{{ ModelName }}</div>
+    <div>{{ dirName }}</div>
+
+    <p>
+        <button onclick="copyCode()">複製內容</button>
+        <pre style="background-color: black; color: white;">
+            <code id="code-block">
+                {% for img in imgLink_list %}
+                    {{ img }}
+                {% endfor %}
+            </code>
+        </pre>
+    </p>
+    <script>
+        function copyCode() {
+            var codeBlock = document.getElementById("code-block");
+            var range = document.createRange();
+            range.selectNode(codeBlock);
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges();
+        }
+    </script>
+
+</body>
+</html>
