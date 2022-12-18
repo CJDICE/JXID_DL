@@ -13,6 +13,8 @@ import requests
 import sys
 
 fetched_url = ''
+fetched_cookie = ''
+fetched_agent = ''
 
 # Create your views here.
 def show_index(request):
@@ -21,6 +23,8 @@ def show_index(request):
 def submit(request):
     if request.method == 'POST':
         urlMainPage = request.POST.get('inputField')
+        cookie = request.POST.get('cookie')
+        agent = request.POST.get('agent')
         print(' ### TEST INPUT' + urlMainPage)
 
         ### Main process ###
@@ -32,20 +36,27 @@ def submit(request):
         global fetched_url
         fetched_url = urlMainPage
 
+        global fetched_cookie
+        fetched_cookie = cookie
+
+        global fetched_agent
+        fetched_agent = agent
+
         return redirect('success')
 
 def success_view(request):
 
-    imgLinks = getLinks(fetched_url)
+    ModelName, dirName, imgLinks = getLinks(fetched_url)
 
+    """
     # Debug output
     for img in imgLinks:
         print(img)
+    """
 
-    return render(request, 'hello.html', {'imgLink_list': imgLinks})
+    return render(request, 'hello.html', {'imgLink_list': imgLinks, 'ModelName': ModelName, 'dirName': dirName})
 
 def downloadImg(dirName, imgList):
-
     downloadDirectory = './' + dirName
     if not os.path.exists(downloadDirectory):
         os.mkdir(downloadDirectory)
@@ -66,13 +77,15 @@ def downloadImg(dirName, imgList):
 
 def composeHeaders():
     headers = {
-        'User-Agent':'',
-        'Cookie':''
+        'User-Agent':fetched_agent,
+        'Cookie':fetched_cookie
         }
 
     with open('headers.txt', 'r') as f:
-        headers['User-Agent'] = f.readline().strip('\n')
-        headers['Cookie'] = f.readline().strip('\n')
+        if headers['User-Agent'] == '':
+            headers['User-Agent'] = f.readline().strip('\n')
+        if headers['Cookie'] == '':
+            headers['Cookie'] = f.readline().strip('\n')
         f.close()
 
     return headers
@@ -127,7 +140,7 @@ def getLinks(pageURL):
 
         #downloadImg(request, imgList)
 
-        return imgList
+        return ModelName, dirName, imgList
 
     except HTTPError as e:
         print(e)
