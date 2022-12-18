@@ -13,6 +13,10 @@
         <label for="inputField">Input:</label><br>
         <input type="text" id="inputField" name="inputField"><br>
         <input type="submit" value="Submit">
-      </form>
+    </form>
+        {% for img in imgLink_list %}
+            <p>{{ img }}</p>
+        {% endfor %}
+
 </body>
 </html>
