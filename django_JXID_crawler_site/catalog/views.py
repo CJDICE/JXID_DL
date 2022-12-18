@@ -46,7 +46,7 @@ def submit(request):
 
 def success_view(request):
 
-    ModelName, dirName, imgLinks = getLinks(fetched_url)
+    ModelName, dirName, imgLinks, total = getLinks(fetched_url)
 
     """
     # Debug output
@@ -54,7 +54,7 @@ def success_view(request):
         print(img)
     """
 
-    return render(request, 'hello.html', {'imgLink_list': imgLinks, 'ModelName': ModelName, 'dirName': dirName})
+    return render(request, 'hello.html', {'imgLink_list': imgLinks, 'ModelName': ModelName, 'dirName': dirName, 'total': total})
 
 def downloadImg(dirName, imgList):
     downloadDirectory = './' + dirName
@@ -140,7 +140,7 @@ def getLinks(pageURL):
 
         #downloadImg(request, imgList)
 
-        return ModelName, dirName, imgList
+        return ModelName, dirName, imgList, i
 
     except HTTPError as e:
         print(e)

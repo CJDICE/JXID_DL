@@ -10,7 +10,7 @@
 <body>
     <form action="{% url 'submit' %}" method="post">
         {% csrf_token %}
-        <label for="inputField">Input:</label><br>
+        <label for="inputField">Url:</label><br>
         <input type="text" id="inputField" name="inputField"><br>
         <label for="cookie">Cookie:</label><br>
         <input type="text" id="cookie" name="cookie"><br>
@@ -20,14 +20,14 @@
     </form>
     <div>{{ ModelName }}</div>
     <div>{{ dirName }}</div>
+    <div>總數：{{ total }}</div>
 
     <p>
         <button onclick="copyCode()">複製內容</button>
         <pre style="background-color: black; color: white;">
             <code id="code-block">
-                {% for img in imgLink_list %}
-                    {{ img }}
-                {% endfor %}
+{% for img in imgLink_list %}
+{{ img }}{% endfor %}
             </code>
         </pre>
     </p>
