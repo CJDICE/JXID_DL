@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.45/vue.cjs.min.js" integrity="sha512-6B3X7ZmeLyv4mv37HvNQX+/iVFlAMj2h4/Cqp/Rs05gO0vQ8GGxbh3voL3oJNSqaB5Z7zOBZgDHy2wLyw8TCBA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
-    <form action="submit" method="post">
+    <form action="{% url 'submit' %}" method="post">
         {% csrf_token %}
         <label for="inputField">Input:</label><br>
         <input type="text" id="inputField" name="inputField"><br>

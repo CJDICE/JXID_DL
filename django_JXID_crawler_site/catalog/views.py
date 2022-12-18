@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.shortcuts import redirect
 from urllib.request import urlopen
 from urllib.request import urlretrieve
 from urllib.error import HTTPError
@@ -11,14 +12,16 @@ import os
 import requests
 import sys
 
+fetched_url = ''
+
 # Create your views here.
 def show_index(request):
     return render(request, 'hello.html')
 
 def submit(request):
     if request.method == 'POST':
-        input_url = request.POST.get('inputField')
-        print(' ### TEST INPUT' + input_url)
+        urlMainPage = request.POST.get('inputField')
+        print(' ### TEST INPUT' + urlMainPage)
 
         ### Main process ###
         if 'VIRTUAL_ENV' in os.environ:
@@ -26,15 +29,20 @@ def submit(request):
         else:
             print('Not running in a virtual environment')
 
-        strMainPage = input_url
-        imgLinks = getLinks(strMainPage, request)
+        global fetched_url
+        fetched_url = urlMainPage
 
-        # Debug output
-        for img in imgLinks:
-            print(img)
+        return redirect('success')
 
-        #return render(request, 'hello.html')
-        return render(request, 'hello.html', {'imgLink_list': imgLinks})
+def success_view(request):
+
+    imgLinks = getLinks(fetched_url)
+
+    # Debug output
+    for img in imgLinks:
+        print(img)
+
+    return render(request, 'hello.html', {'imgLink_list': imgLinks})
 
 def downloadImg(dirName, imgList):
 
@@ -76,7 +84,7 @@ def getHtml(url):
     html = str(page.read(), 'utf-8')
     return html
 
-def getLinks(pageURL, request):
+def getLinks(pageURL):
 
     if ('' == pageURL):
         return
